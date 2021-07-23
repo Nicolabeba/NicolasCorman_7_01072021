@@ -2,15 +2,16 @@
   <div class="posts">
     <h3>L'actualité de vos collègues</h3>
 
-    <article class="post" v-for="post in posts" :key="post">
-      <router-link :to="{ name: 'OnePost', params: { id: post.id } }">
-        <div class="post-name">
-          Publié par <strong>{{ post.name }}</strong> -
-          {{ datePost(post.date) }}
-        </div>
-        <div class="post-content">{{ post.content }}</div>
-        <div class="post-image"><img :src="post.image" /></div>
-        <h3 class="titleComments">Commentaires :</h3>
+    <article href="" class="post" v-for="post in posts" :key="post.id">
+      <!-- <router-link :to="{ name: 'OnePost', params: { id: post.id } }"> -->
+      <div class="post-name">
+        Publié par
+        <strong>{{ post.first_name }} {{ post.last_name }}</strong> -
+        {{ post.createdAt }}
+      </div>
+      <div class="post-content">{{ post.content }}</div>
+      <div class="post-image"><img :src="post.image" /></div>
+      <!-- <h3 class="titleComments">Commentaires :</h3>
 
         <div class="comments" v-for="comment in post.comments" :key="comment">
           <div class="comment-content">{{ comment.content }}</div>
@@ -18,8 +19,8 @@
             <strong>{{ comment.name }}</strong> -
             {{ datePost(comment.date_creation) }}
           </div>
-        </div>
-      </router-link>
+        </div> -->
+      <!-- </router-link> -->
     </article>
   </div>
 </template>
@@ -51,20 +52,9 @@ export default {
           },
         })
         .then((res) => {
-          this.posts = res.data;
+          this.posts.push(...res.data);
+          console.log(res.data);
         });
-    },
-    datePost(date) {
-      const event = new Date(date);
-      const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-      };
-
-      return event.toLocaleDateString("fr-Fr", options);
     },
   },
 };
@@ -76,14 +66,14 @@ h3 {
 }
 .posts {
   text-align: center;
-  width: 80%;
+  width: 100%;
   margin: auto;
 }
 .post {
   background: rgb(255, 215, 215);
   border: 1px solid rgb(119, 119, 119);
   border-radius: 25px;
-  width: 100%;
+  width: 95%;
   margin: auto;
   height: auto;
   margin-bottom: 5rem;
@@ -110,11 +100,11 @@ h3 {
   background-color: #fff;
   border: 1px transparent black;
   border-radius: 10px;
-  width: 70%;
+  width: 100%;
   margin: auto;
   margin-bottom: 15px;
   text-align: initial;
-  padding: 15px;
+  padding: 10px;
 }
 .comment-content {
   margin-bottom: 10px;
@@ -135,27 +125,5 @@ img {
 a {
   text-decoration: none;
   color: black;
-}
-
-@media screen and (min-width: 426px) {
-  .posts {
-    width: 65%;
-  }
-  .comments {
-    width: 85%;
-  }
-}
-@media screen and (min-width: 769px) {
-  .post-image img {
-    width: 75%;
-  }
-}
-@media screen and (min-width: 1025px) {
-  .posts {
-    width: 45%;
-  }
-  .post-image img {
-    width: 60%;
-  }
 }
 </style>

@@ -16,8 +16,8 @@ router.post("/post/create", auth, multer, postCtrl.createPost);
 // router.put("/:id", auth, postCtrl.modifyPost);
 // // Router de la suppression du post
 // router.delete("/:id", auth, postCtrl.deletePost);
-// // Router de l'accès à tous les posts
-// router.get("/all", auth, postCtrl.getAllPost);
+// Router de l'accès à tous les posts
+router.get("/post/all", postCtrl.getAllPost);
 // // Router de l'accès à un post
 // router.get("/:id", auth, postCtrl.getOnePost);
 

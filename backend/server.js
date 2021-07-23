@@ -4,6 +4,8 @@ const app = express();
 const db = require("./models");
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
+const bodyParsers = require("body-parser");
+const path = require("path");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -19,18 +21,16 @@ app.use((req, res, next) => {
 });
 
 app.use(cors());
+
 // parse requests of content-type - application/json
+app.use(bodyParsers.json());
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 db.sequelize.sync();
-
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to groupomania api." });
-});
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

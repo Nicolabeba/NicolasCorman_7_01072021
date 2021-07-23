@@ -15,10 +15,10 @@ const storage = multer.diskStorage({
     callback(null, "images");
   },
   filename: (req, file, callback) => {
-    // Remplace les espaces par des "_"
-    const name = file.originalname.split(" ").join("_");
-    const extension = MIME_TYPES[file.mimetype];
-    callback(null, name + Date.now() + "." + extension);
+    const name = file.originalname.split(" ").join("_").split(".")[0];
+    const extention = MIME_TYPES[file.mimetype];
+    if (extention) callback(null, name + Date.now() + "." + extention);
+    else console.log("l'extention n est pas supportée");
   },
 });
 

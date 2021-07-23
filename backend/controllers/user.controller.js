@@ -49,9 +49,7 @@ exports.signup = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  console.log(req.body.email);
   const cryptoEmail = crypt.MD5(req.body.email).toString();
-  console.log(cryptoEmail);
 
   User.findOne({ email: cryptoEmail })
     .then((user) => {
@@ -65,9 +63,11 @@ exports.login = (req, res) => {
             return res.status(401).json({ error: "Mot de passe incorrect !" });
           }
           res.status(200).json({
-            userId: user._id,
+            userId: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
             token: jwt.sign(
-              { userId: user._id },
+              { userId: user.id },
               process.env.AUTH_SECRET_KEY_TOKEN,
               {
                 expiresIn: "24h",
@@ -100,7 +100,7 @@ exports.delete = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete Tutorial with id=" + id,
+        message: "Could not delete Post with id=" + id,
       });
     });
 };

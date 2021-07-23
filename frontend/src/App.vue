@@ -24,8 +24,4 @@ html {
   border-radius: 25px;
   border: solid;
 }
-
-h2 {
-  margin-bottom: 2rem;
-}
 </style>
