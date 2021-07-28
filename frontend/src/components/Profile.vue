@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       token: "",
-      userId: "",
+      UserId: "",
       first_name: "",
       last_name: "",
     };
@@ -36,7 +36,7 @@ export default {
   methods: {
     deleteProfile() {
       const token = localStorage.getItem("token");
-      const id = localStorage.getItem("userId");
+      const id = localStorage.getItem("UserId");
 
       axios
         .delete("http://localhost:3000/api/delete/" + id, {

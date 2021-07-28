@@ -54,14 +54,14 @@ export default {
       const token = localStorage.getItem("token");
       const first_name = localStorage.getItem("first_name");
       const last_name = localStorage.getItem("last_name");
-      const userId = localStorage.getItem("userId");
+      const UserId = localStorage.getItem("UserId");
 
       const formData = new FormData();
       const imagefile = this.image;
       formData.append("image", imagefile);
       formData.set("first_name", first_name);
       formData.set("last_name", last_name);
-      formData.set("id_user", userId);
+      formData.set("UserId", UserId);
       formData.set("content", this.content);
 
       axios

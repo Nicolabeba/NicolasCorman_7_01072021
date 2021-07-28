@@ -11,8 +11,8 @@ exports.createComment = (req, res) => {
   }
   const comment = {
     ...req.body.comment,
-    //postId: req.body.postId,
-    id_user: req.body.userId,
+    PostId: req.body.PostId,
+    UserId: req.body.UserId,
   };
 
   Comment.create(comment)
@@ -36,26 +36,21 @@ exports.getAllComments = (req, res, next) => {
 
 //Suppression d'un commentaire
 exports.deleteComment = (req, res, next) => {
-  const commentUserId = req.body.commentUserId;
-  const userId = req.body.userId;
-
-  if (commentUserId === userId || req.admin === true) {
-    Comment.destroy({ where: { id: req.params.id } })
-      .then((num) => {
-        if (num == 1) {
-          res.send({
-            message: "Comment was deleted successfully!",
-          });
-        } else {
-          res.send({
-            message: `Cannot delete Comment with id=${id}.`,
-          });
-        }
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: "Could not delete comment with id=" + id,
+  Comment.destroy({ where: { id: req.params.id } })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "Comment was deleted successfully!",
         });
+      } else {
+        res.send({
+          message: `Cannot delete Comment with id=${id}.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete comment with id=" + id,
       });
-  }
+    });
 };

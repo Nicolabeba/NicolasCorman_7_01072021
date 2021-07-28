@@ -9,11 +9,11 @@
       <div class="post-content">{{ post.content }}</div>
       <div class="post-image"><img :src="post.image" /></div>
 
-      <h5 v-if="userId === post.id_user" class="titleComments">
+      <h5 v-if="UserId === post.UserId" class="titleComments">
         Modifier le contenu du post
       </h5>
 
-      <div class="modifyForm" v-if="userId == post.id_user">
+      <div class="modifyForm" v-if="UserId == post.UserId">
         <label class="titleModify" for="modify"> </label>
         <br />
         <textarea
@@ -32,7 +32,7 @@
         <h5 class="titleComments">Commentaires</h5>
         <div
           class="comments"
-          v-for="(comment, n) in post.comments"
+          v-for="(comment, n) in post.Comments"
           :key="comment"
         >
           <div class="comment-content">{{ comment.content }}</div>
@@ -40,7 +40,7 @@
             <button
               class="deleteComment"
               @click="deleteComment(n)"
-              v-if="userId == comment.id_user"
+              v-if="UserId == comment.UserId"
             ></button>
           </div>
           <div class="comment-name">
@@ -53,11 +53,7 @@
         </div>
       </div>
     </article>
-    <button
-      class="deletePost"
-      @click="deletePost"
-      v-if="userId == post.id_user"
-    >
+    <button class="deletePost" @click="deletePost" v-if="UserId == post.UserId">
       Supprimer la publication
     </button>
   </div>
@@ -88,7 +84,7 @@ export default {
 
   data() {
     return {
-      userId: "",
+      UserId: "",
       text: "",
       editText: "",
       post: {},
@@ -97,7 +93,7 @@ export default {
 
   mounted() {
     this.getOnePost();
-    this.userId = localStorage.getItem("userId");
+    this.UserId = localStorage.getItem("UserId");
   },
 
   methods: {
@@ -130,7 +126,7 @@ export default {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: { userId: this.userId },
+          body: { UserId: this.UserId },
         })
         .then((res) => {
           if (res) {
@@ -171,23 +167,24 @@ export default {
 
     createComment(e) {
       e.preventDefault();
-      const postId = this.$route.params.id;
+      const PostId = this.$route.params.id;
       const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
+      const UserId = localStorage.getItem("UserId");
 
       const newComment = {
         first_name: localStorage.getItem("first_name"),
         last_name: localStorage.getItem("last_name"),
+
         content: this.text,
       };
 
       axios
         .post(
-          `http://localhost:3000/api/comment/${postId}`,
+          `http://localhost:3000/api/comment/${PostId}`,
           {
             comment: newComment,
-            //postId: postId,
-            userId: userId,
+            PostId: PostId,
+            UserId: UserId,
           },
 
           {
@@ -198,7 +195,7 @@ export default {
           }
         )
         .then((res) => {
-          this.post.comment.push(res.data);
+          this.post.Comments.push(res.data);
         })
         .catch((error) => {
           console.log("Le commentaire n'a pas pu être crée /" + error);
@@ -207,13 +204,13 @@ export default {
 
     deleteComment(n) {
       const token = localStorage.getItem("token");
-      const commentId = this.post.comments[n].id;
-      const commentUserId = this.post.comments[n].id_user;
-      const userId = localStorage.getItem("userId");
+      const commentId = this.post.Comments[n].id;
+      const commentUserId = this.post.Comments[n].UserId;
+      const UserId = localStorage.getItem("UserId");
       axios
         .delete(`http://localhost:3000/api/delete_comment/${commentId}`, {
           data: {
-            userId: userId,
+            UserId: UserId,
             commentUserId: commentUserId,
           },
           headers: {
@@ -222,7 +219,7 @@ export default {
           },
         })
         .then(() => {
-          this.post.comments.splice(n, 1);
+          this.post.Comments.splice(n, 1);
         })
         .catch((error) => {
           console.log("Le post n'a pas pu être supprimé /" + error);

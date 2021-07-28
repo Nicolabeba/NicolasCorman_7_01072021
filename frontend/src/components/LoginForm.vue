@@ -25,15 +25,10 @@
           placeholder="Mot de passe"
         />
       </div>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-        <label class="form-check-label" for="exampleCheck1"
-          >J'accepte les CGU.</label
-        >
-        <button v-on:click="login" type="submit" class="btn btn-primary">
-          Se connecter
-        </button>
-      </div>
+
+      <button v-on:click="login" type="submit" class="btn btn-primary">
+        Se connecter
+      </button>
     </form>
   </div>
 </template>
@@ -46,7 +41,7 @@ export default {
   name: "Login",
   data() {
     return {
-      userId: "",
+      UserId: "",
       first_name: "",
       last_name: "",
       token: "",
@@ -58,7 +53,6 @@ export default {
   methods: {
     login(e) {
       e.preventDefault();
-      console.log(this.email);
 
       axios
         .post(
@@ -76,7 +70,7 @@ export default {
         .then((res) => {
           {
             localStorage.setItem("token", res.data.token);
-            localStorage.setItem("userId", res.data.userId);
+            localStorage.setItem("UserId", res.data.UserId);
             localStorage.setItem("first_name", res.data.first_name);
             localStorage.setItem("last_name", res.data.last_name);
           }

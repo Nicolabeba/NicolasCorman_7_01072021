@@ -12,7 +12,7 @@
         <div class="post-image"><img :src="post.image" /></div>
         <h5 class="titleComments">Commentaires :</h5>
 
-        <div class="comments" v-for="comment in post.comments" :key="comment">
+        <div class="comments" v-for="comment in post.Comments" :key="comment">
           <div class="comment-content">{{ comment.content }}</div>
           <div class="comment-name">
             <strong
