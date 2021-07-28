@@ -169,7 +169,8 @@ export default {
         });
     },
 
-    createComment() {
+    createComment(e) {
+      e.preventDefault();
       const postId = this.$route.params.id;
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
@@ -185,7 +186,7 @@ export default {
           `http://localhost:3000/api/comment/${postId}`,
           {
             comment: newComment,
-            postId: postId,
+            //postId: postId,
             userId: userId,
           },
 
@@ -197,7 +198,7 @@ export default {
           }
         )
         .then((res) => {
-          this.post.comments.push(res.data);
+          this.post.comment.push(res.data);
         })
         .catch((error) => {
           console.log("Le commentaire n'a pas pu être crée /" + error);

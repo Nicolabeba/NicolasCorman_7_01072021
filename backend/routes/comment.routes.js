@@ -4,8 +4,10 @@ const router = express.Router();
 //Important de "auth" qui permet de sécuriser les routes
 const auth = require("../middleware/auth");
 
-//Importation du "controller" concernant les "commentaire"
+//Importation du "controller" concernant les "commentaires"
 const commentCtrl = require("../controllers/comment.controller");
+// middleware d'authentification du user effectuant le comment avec celui du Token
+const commentOwner = require("../middleware/comment-owner");
 
 //création d'un commentaire
 router.post("/comment/:id", auth, commentCtrl.createComment);
@@ -14,6 +16,11 @@ router.post("/comment/:id", auth, commentCtrl.createComment);
 router.get("/comment/:id/comment", commentCtrl.getAllComments);
 
 //suppression d'un commentaire
-router.delete("/delete_comment/:id", auth, commentCtrl.deleteComment);
+router.delete(
+  "/delete_comment/:id",
+  auth,
+  commentOwner,
+  commentCtrl.deleteComment
+);
 
 module.exports = router;

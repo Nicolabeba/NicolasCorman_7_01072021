@@ -17,6 +17,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    admin: {
+      type: Sequelize.BOOLEAN,
+    },
   });
 
   return User;

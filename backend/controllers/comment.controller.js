@@ -4,14 +4,14 @@ const Comment = db.comment;
 
 // Création d'un commentaire
 exports.createComment = (req, res) => {
-  if (!req.body.content) {
+  if (!req.body.comment.content) {
     res.status(400).send({
       message: "Comment can not be empty!",
     });
   }
   const comment = {
     ...req.body.comment,
-    postId: req.body.postId,
+    //postId: req.body.postId,
     id_user: req.body.userId,
   };
 
@@ -39,9 +39,7 @@ exports.deleteComment = (req, res, next) => {
   const commentUserId = req.body.commentUserId;
   const userId = req.body.userId;
 
-  //console.log(commentUserId, comment_id, id_user);
-
-  if (commentUserId === userId) {
+  if (commentUserId === userId || req.admin === true) {
     Comment.destroy({ where: { id: req.params.id } })
       .then((num) => {
         if (num == 1) {

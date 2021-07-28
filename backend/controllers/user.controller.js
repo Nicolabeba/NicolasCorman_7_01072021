@@ -32,6 +32,7 @@ exports.signup = (req, res) => {
         last_name: req.body.last_name,
         email: cryptoEmail,
         password: hash,
+        admin: false,
       };
       // Save User in the database
       User.create(user)
@@ -66,6 +67,7 @@ exports.login = (req, res) => {
             userId: user.id,
             first_name: user.first_name,
             last_name: user.last_name,
+            admin: user.admin,
             token: jwt.sign(
               { userId: user.id },
               process.env.AUTH_SECRET_KEY_TOKEN,

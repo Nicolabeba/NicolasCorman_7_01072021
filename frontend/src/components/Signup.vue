@@ -136,6 +136,7 @@ export default {
               last_name: this.last_name,
               email: this.email,
               password: this.password,
+              admin: false,
             },
 
             {

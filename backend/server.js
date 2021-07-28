@@ -32,6 +32,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 db.sequelize.sync();
+// ({ force: true })
+// .then(() => {
+//   console.log("Drop and re-sync db.");
+// })
+// .catch((err) => {
+//   console.log(err);
+// });
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

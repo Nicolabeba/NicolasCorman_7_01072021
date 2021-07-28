@@ -9,7 +9,7 @@ router.post("/signup", userCtrl.signup);
 router.post("/login", userCtrl.login);
 // Router de la suppression
 router.delete("/delete/:id", auth, userCtrl.delete);
-//Router de la modification
+//Router de la modification de l'utilisateur (à implémenter)
 //router.put("/user/:id", auth, userCtrl.delete);
 
 module.exports = router;
