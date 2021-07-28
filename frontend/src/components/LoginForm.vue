@@ -107,6 +107,6 @@ li {
   margin: 0 10px;
 }
 a {
-  color: #1e1386;
+  color: #2f68c3;
 }
 </style>

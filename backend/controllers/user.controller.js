@@ -80,7 +80,7 @@ exports.login = (req, res) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-// Supprime le compte d'un utilisateur
+//Supprime le compte d'un utilisateur
 exports.delete = (req, res) => {
   const id = req.params.id;
 

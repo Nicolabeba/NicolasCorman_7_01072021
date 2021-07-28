@@ -1,5 +1,6 @@
 <template>
   <div class="onepost">
+    <HeaderLogged />
     <SearchOnePost />
     <Footer />
   </div>
@@ -10,9 +11,10 @@
 
 import SearchOnePost from "@/components/SearchOnePost.vue";
 import Footer from "@/components/Footer.vue";
+import HeaderLogged from "@/components/HeaderLogged.vue";
 
 export default {
   name: "OnePost",
-  components: { SearchOnePost, Footer },
+  components: { HeaderLogged, SearchOnePost, Footer },
 };
 </script>

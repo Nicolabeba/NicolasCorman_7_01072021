@@ -1,6 +1,14 @@
 <template>
   <header class="nav">
-    <img src="../assets/icon-left-font.svg" alt="Groupomania" href="/" />
+    <router-link to="/wall">
+      <span title="Cliquez-ici pour revenir à la Timeline."
+        ><img
+          class="infobulle"
+          src="../assets/icon-left-font.svg"
+          alt="Groupomania"
+          href="/"
+      /></span>
+    </router-link>
     <div class="nav">
       <router-link to="/profile">
         <p>Votre profil</p>
@@ -28,9 +36,11 @@ export default {
 <style scoped lang="scss">
 .nav {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: nowrap;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
   img {
     width: 30vh;
     height: 20vh;

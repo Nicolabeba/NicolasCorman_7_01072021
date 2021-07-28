@@ -22,9 +22,8 @@ export default {
     height: 20vh;
   }
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-wrap: nowrap;
 
   a {
     font-weight: bold;

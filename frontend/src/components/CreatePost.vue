@@ -8,7 +8,7 @@
           <textarea
             name="content"
             class="contentNewPost"
-            placeholder="Quoi de beau ?"
+            placeholder="Quoi de neuf, Docteur ?"
             required
             v-model="content"
           ></textarea>
@@ -64,12 +64,6 @@ export default {
       formData.set("id_user", userId);
       formData.set("content", this.content);
 
-      // axios.post('upload_file', formData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data'
-      //     }
-      //})
-
       axios
         .post(
           "http://localhost:3000/api/post/create",
@@ -112,11 +106,11 @@ export default {
   justify-content: center;
 }
 .createPost {
-  border: 1px solid black;
+  border: 1px solid #2f68c3;
   border-radius: 10px;
   width: 95%;
   margin: auto;
-  padding: 2rem;
+  padding: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -136,6 +130,6 @@ button {
   font-weight: 500;
 }
 button:hover {
-  background-color: #be8a8a;
+  background-color: #3572d4;
 }
 </style>

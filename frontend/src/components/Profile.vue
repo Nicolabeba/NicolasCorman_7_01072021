@@ -1,36 +1,35 @@
 <template>
-  <div class="profile">
-    <header class="header">
-      <router-link to="/wall">
-        <img src="../assets/icon-left-font.png" alt="Logo de Groupomania" />
-      </router-link>
-    </header>
+  <HeaderLogged />
+  <main>
+    <h3 class="userName">
+      Bonjour
+      {{ first_name }} {{ last_name }}
+    </h3>
 
-    <main>
-      <h2>Bonjour,</h2>
-      <div class="userName"></div>
-
-      <button class="delete" @click="deleteProfile">Supprimer le profil</button>
-    </main>
-  </div>
+    <button class="delete" @click="deleteProfile">Supprimer le profil</button>
+  </main>
 </template>
 
 <script>
 import axios from "axios";
+import HeaderLogged from "@/components/HeaderLogged.vue";
 
 export default {
   name: "Profile",
+  components: { HeaderLogged },
 
   data() {
     return {
       token: "",
       userId: "",
-      name: "",
+      first_name: "",
+      last_name: "",
     };
   },
 
   mounted() {
-    const name = localStorage.getItem("name");
+    this.first_name = localStorage.getItem("first_name");
+    this.last_name = localStorage.getItem("last_name");
     document.getElementsByClassName("userName")[0].innerHTML = name;
   },
 
@@ -61,29 +60,13 @@ export default {
 </script>
 
 <style scoped>
-.header,
-main {
-  text-align: center;
-}
-img {
-  width: 85%;
-  margin-bottom: 1rem;
-}
-a {
-  text-decoration: none;
-  color: black;
-}
-h2 {
-  margin-bottom: 3rem;
-}
 .userName {
   border: 1px transparent black;
   border-radius: 10px;
-  width: 30%;
+  width: 90%;
   margin: auto;
   padding: 1rem;
-  margin-bottom: 6rem;
-  background: #f1f2f6;
+  margin-bottom: 2rem;
 }
 .delete {
   border-radius: 10px;
@@ -93,15 +76,5 @@ h2 {
   font-weight: bold;
   color: white;
   cursor: pointer;
-}
-@media screen and (min-width: 426px) {
-  img {
-    width: 40%;
-  }
-}
-@media screen and (min-width: 1025px) {
-  img {
-    width: 25%;
-  }
 }
 </style>

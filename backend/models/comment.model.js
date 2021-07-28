@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Post = sequelize.define("Post", {
+  const Comment = sequelize.define("Comment", {
     id_user: {
       type: Sequelize.INTEGER,
     },
@@ -15,9 +15,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    image: {
-      type: Sequelize.STRING,
-    },
   });
-  return Post;
+  return Comment;
 };

@@ -1,83 +1,82 @@
 <template>
-  <div class="searchOnePost">
-    <header class="header">
-      <router-link to="/wall">
-        <img src="../assets/icon-left-font.png" alt="Logo de Groupomania" />
-      </router-link>
-    </header>
+  <div class="posts">
+    <article class="post">
+      <div class="post-name">
+        Publié par
+        <strong> {{ post.first_name }} {{ post.last_name }} </strong> - le
+        {{ post.createdAt }}
+      </div>
+      <div class="post-content">{{ post.content }}</div>
+      <div class="post-image"><img :src="post.image" /></div>
 
-    <div class="posts">
-      <article class="post" v-if="post !== undefined">
-        <div class="post-name">
-          Publié par <strong> {{ post.name }} </strong> -
-          {{ datePost(post.date) }}
-        </div>
-        <div class="post-content" v-html="post.content"></div>
-        <div class="post-image"><img :src="post.image" /></div>
+      <h5 v-if="userId === post.id_user" class="titleComments">
+        Modifier le contenu du post
+      </h5>
 
-        <div class="modifyForm" v-if="userId == post.id_user">
-          <label class="titleModify" for="modify"
-            >Modifier le contenu du post :
-          </label>
-          <br />
-          <textarea
-            class="contentPost"
-            name="modify"
-            placeholder="Une modification ?"
-            v-model="content"
-          ></textarea>
-          <br />
-          <button class="modifyPost" @click="modifyPost" v-if="content !== ''">
-            Modifier
-          </button>
-        </div>
+      <div class="modifyForm" v-if="userId == post.id_user">
+        <label class="titleModify" for="modify"> </label>
+        <br />
+        <textarea
+          class="contentPost"
+          name="modify"
+          placeholder="Modifier le post "
+          v-model="editText"
+        ></textarea>
+        <br />
+        <button class="modifyPost" @click="modifyPost">
+          Modifier
+        </button>
+      </div>
 
-        <div class="allComments">
-          <h3 class="titleComments">Commentaires :</h3>
-          <div class="comments" v-for="comment in comments" :key="comment">
-            <div class="comment-content">{{ comment.content }}</div>
-            <div>
-              <button
-                class="deleteComment"
-                @click="deleteComment(comment.id)"
-                v-if="userId == comment.id_user || admin == 1"
-              ></button>
-            </div>
-            <div class="comment-name">
-              <strong>{{ comment.name }}</strong> le
-              {{ datePost(comment.date_creation) }}
-            </div>
+      <div class="allComments">
+        <h5 class="titleComments">Commentaires</h5>
+        <div
+          class="comments"
+          v-for="(comment, n) in post.comments"
+          :key="comment"
+        >
+          <div class="comment-content">{{ comment.content }}</div>
+          <div>
+            <button
+              class="deleteComment"
+              @click="deleteComment(n)"
+              v-if="userId == comment.id_user"
+            ></button>
+          </div>
+          <div class="comment-name">
+            <strong
+              >par {{ comment.first_name }} {{ comment.last_name }}</strong
+            >
+            le
+            {{ comment.createdAt }}
           </div>
         </div>
+      </div>
+    </article>
+    <button
+      class="deletePost"
+      @click="deletePost"
+      v-if="userId == post.id_user"
+    >
+      Supprimer la publication
+    </button>
+  </div>
 
-        <button
-          class="deletePost"
-          @click="deletePost"
-          v-if="userId == post.id_user || admin == 1"
-        >
-          Supprimer la publication
+  <div class="createComments">
+    <form class="formComment">
+      <div class="formNewComments">
+        <textarea
+          name="newComment"
+          class="contentNewComment"
+          placeholder="Poster un commentaire"
+          v-model="text"
+          required
+        ></textarea>
+        <button @click="createComment" class="addComment" type="submit">
+          Commenter
         </button>
-      </article>
-    </div>
-
-    <div class="createComments">
-      <form class="formComment" @submit.prevent="createComment">
-        <div class="formNewComments">
-          <label class="titleNewComment" for="newComment"
-            >Un commentaire ?</label
-          >
-          <br />
-          <textarea
-            name="newComment"
-            class="contentNewComment"
-            placeholder="Un commentaire?"
-            required
-          ></textarea>
-          <br />
-          <button class="addComment" type="submit">Commenter</button>
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -89,88 +88,35 @@ export default {
 
   data() {
     return {
-      post: [],
-      comments: [],
-      content: "",
-      modifyContent: "",
-      name: "",
       userId: "",
-      admin: "",
+      text: "",
+      editText: "",
+      post: {},
     };
   },
 
   mounted() {
     this.getOnePost();
     this.userId = localStorage.getItem("userId");
-    this.admin = localStorage.getItem("admin");
   },
 
   methods: {
     getOnePost() {
-      const idPost = this.$route.params.id;
       const token = localStorage.getItem("token");
+      const idPost = this.$route.params.id;
+
       axios
-        .get("http://localhost:3000/api/post/" + idPost, {
+        .get(`http://localhost:3000/api/post/${idPost}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         })
         .then((res) => {
-          console.log(res.data);
-          this.post = res.data.post;
-          this.comments = res.data.comments;
+          this.post = res.data;
         })
         .catch((error) => {
-          console.log("Le post n'a pas pu être récupéré /" + error);
-        });
-    },
-
-    createComment() {
-      const content = document.getElementsByClassName("contentNewComment")[0]
-        .value;
-      const idPost = this.$route.params.id;
-      const token = localStorage.getItem("token");
-
-      axios
-        .post(
-          `http://localhost:3000/api/comment/${idPost}/comment`,
-          {
-            content,
-          },
-
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((res) => {
-          this.comments = res.data;
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.log("Le commentaire n'a pas pu être crée /" + error);
-        });
-    },
-
-    deleteComment(idComment) {
-      const token = localStorage.getItem("token");
-      axios
-        .delete(`http://localhost:3000/api/comment/comment/${idComment}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          if (res) {
-            window.location.reload();
-          }
-        })
-        .catch((error) => {
-          console.log("Le commentaire n'a pas pu être supprimé /" + error);
+          console.log(error);
         });
     },
 
@@ -179,11 +125,12 @@ export default {
       const idPost = this.$route.params.id;
 
       axios
-        .delete("http://localhost:3000/api/post/" + idPost, {
+        .delete(`http://localhost:3000/api/post/${idPost}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          body: { userId: this.userId },
         })
         .then((res) => {
           if (res) {
@@ -198,13 +145,12 @@ export default {
     modifyPost() {
       const idPost = this.$route.params.id;
       const token = localStorage.getItem("token");
-      const content = document.getElementsByClassName("contentPost")[0].value;
+      const content = this.editText;
 
       axios
         .put(
-          "http://localhost:3000/api/post/" + idPost,
+          `http://localhost:3000/api/post/${idPost}`,
           {
-            idPost,
             content,
           },
 
@@ -215,27 +161,71 @@ export default {
             },
           }
         )
-        .then((res) => {
-          if (res) {
-            window.location.reload();
-          }
+        .then(() => {
+          this.post.content = content;
         })
         .catch((error) => {
           console.log("Le post n'a pas pu être modifié /" + error);
         });
     },
 
-    datePost(date) {
-      const event = new Date(date);
-      const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
+    createComment() {
+      const postId = this.$route.params.id;
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      const newComment = {
+        first_name: localStorage.getItem("first_name"),
+        last_name: localStorage.getItem("last_name"),
+        content: this.text,
       };
 
-      return event.toLocaleDateString("fr-Fr", options);
+      axios
+        .post(
+          `http://localhost:3000/api/comment/${postId}`,
+          {
+            comment: newComment,
+            postId: postId,
+            userId: userId,
+          },
+
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          this.post.comments.push(res.data);
+        })
+        .catch((error) => {
+          console.log("Le commentaire n'a pas pu être crée /" + error);
+        });
+    },
+
+    deleteComment(n) {
+      const token = localStorage.getItem("token");
+      const commentId = this.post.comments[n].id;
+      const commentUserId = this.post.comments[n].id_user;
+      const userId = localStorage.getItem("userId");
+      axios
+        .delete(`http://localhost:3000/api/delete_comment/${commentId}`, {
+          data: {
+            userId: userId,
+            commentUserId: commentUserId,
+          },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          this.post.comments.splice(n, 1);
+        })
+        .catch((error) => {
+          console.log("Le post n'a pas pu être supprimé /" + error);
+        });
     },
   },
 };
@@ -256,27 +246,28 @@ img {
 }
 .posts {
   text-align: center;
-  width: 90%;
+  width: 100%;
   margin: auto;
 }
 .post {
-  background: rgb(255, 215, 215);
-  border: 1px solid rgb(119, 119, 119);
-  border-radius: 25px;
-  width: 90%;
+  border: 3px solid #2f68c3;
+  border-radius: 10px;
+  width: 95%;
+  height: 250px;
   margin: auto;
   height: auto;
-  margin-bottom: 5rem;
+  margin-bottom: 0.5rem;
+  padding: 20px;
 }
 .post-name {
   border-radius: 25px 25px 0 0;
   padding: 1rem;
-  border-bottom: 1px solid rgb(119, 119, 119);
+  border-bottom: 1.5px solid rgb(119, 119, 119);
   font-style: italic;
 }
 .post-content {
   background-color: #fff;
-  padding: 3rem 1rem;
+  padding: 1rem 1rem;
   margin-bottom: 10px;
   text-align: initial;
 }
@@ -284,7 +275,7 @@ img {
   margin-bottom: 10px;
 }
 .post-image img {
-  width: 90%;
+  width: 80%;
 }
 .comments {
   display: flex;
@@ -312,39 +303,39 @@ img {
   width: 90%;
   margin: auto;
   text-align: initial;
-  padding: 15px;
+  padding: 10px;
 }
 .deleteComment {
   padding: 7px;
-  background-color: white;
+  background-color: rgba(239, 68, 68);
   border-radius: 50%;
   cursor: pointer;
 }
 .deleteComment:hover {
-  background-color: rgba(239, 68, 68);
+  background-color: rgb(255, 109, 109);
 }
-.titleModify,
+
 .contentPost {
-  margin-bottom: 15px;
-}
-.contentPost {
-  padding: 26px;
-  margin-top: 15px;
-  border-radius: 19px;
+  padding: 10px;
+  border-radius: 10px;
+  width: 70%;
 }
 .addComment {
-  background: rgba(239, 68, 68);
+  background: #2f68c3;
+  width: 20%;
+  height: 50px;
 }
 .modifyPost,
 .addComment {
   padding: 6px;
-  width: 60%;
+  width: 100px;
+  background: #2f68c3;
   border-radius: 15px;
   cursor: pointer;
 }
 .modifyPost:hover,
 .addComment:hover {
-  background-color: #b7ebbb;
+  background: #3d76d3;
 }
 .deletePost {
   margin-bottom: 1rem;
@@ -361,54 +352,23 @@ img {
 .formNewComments {
   border: 1px solid rgb(119, 119, 119);
   border-radius: 10px;
-  width: 75%;
+  width: 95%;
   margin: auto;
-  margin-bottom: 2rem;
-  padding: 1rem;
-}
-.contentNewComment {
-  margin: 1rem 0;
-  padding: 26px;
-  border-radius: 19px;
+  display: flex;
+  justify-content: space-around;
+  padding: 30px;
 }
 
-@media screen and (min-width: 426px) {
-  img {
-    width: 30%;
-  }
-  .modifyPost,
-  .addComment {
-    width: 35%;
-  }
+.modifyForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
-@media screen and (min-width: 769px) {
-  img {
-    width: 25%;
-  }
-  .posts {
-    width: 60%;
-  }
-  .formNewComments {
-    width: 50%;
-  }
-  .modifyPost,
-  .addComment {
-    width: 35%;
-  }
-}
-@media screen and (min-width: 1025px) {
-  img {
-    width: 15%;
-  }
-  .posts {
-    width: 45%;
-  }
-  .formNewComments {
-    width: 39%;
-  }
-  .modifyPost,
-  .addComment {
-    width: 27%;
-  }
+
+.contentNewComment {
+  padding: 15px;
+  border-radius: 10px;
+  width: 70%;
+  height: 50px;
 }
 </style>

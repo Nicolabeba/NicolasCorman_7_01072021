@@ -1,11 +1,9 @@
+const { post } = require("../models");
 const db = require("../models");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
 const Post = db.post;
+const Comment = db.comment;
 
-dotenv.config();
-
+//créer un post
 exports.createPost = (req, res, next) => {
   if (!req.body.content) {
     res.status(400).send({
@@ -45,15 +43,74 @@ exports.createPost = (req, res, next) => {
 
 // Accès à tous les posts
 exports.getAllPost = (req, res, next) => {
-  let allComments = [];
-  let allPosts = [];
-
-  Post.findAll()
+  Post.findAll({
+    include: [{ model: Comment, as: "comments" }],
+  })
     .then((posts) => {
       res.status(200).json(posts);
-
-      //   element.comments = allComments[element.id];
-      //allPosts.push(posts);
     })
     .catch((error) => res.status(400).json({ error }));
+};
+
+// Accès à un post
+exports.getOnePost = (req, res, next) => {
+  const id = req.params.id;
+  Post.findByPk(id, { include: [{ model: Comment, as: "comments" }] })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => res.status(500).json({ error }));
+};
+
+// Supprimer un post
+exports.deletePost = (req, res) => {
+  const id = req.params.id;
+
+  Post.destroy({
+    where: { id: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "Post was deleted successfully!",
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Post with id=${id}.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete post with id=" + id,
+      });
+    });
+};
+
+//Modifier un post
+exports.modifyPost = async (req, res) => {
+  const id = req.params.id;
+  let result = [];
+  try {
+    result = await Post.update(
+      { content: req.body.content },
+      {
+        where: { id: id },
+      }
+    );
+  } catch (err) {
+    res.status(500).send({
+      message: "Error updating Post with id=" + id,
+    });
+  }
+
+  if (result[0] === 1) {
+    res.status(200).send({
+      message: "Post was updated successfully.",
+    });
+  } else {
+    res.status(400).send({
+      message: `Cannot update Post with id=${id}.`,
+    });
+  }
 };

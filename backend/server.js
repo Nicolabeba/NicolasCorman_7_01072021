@@ -4,6 +4,7 @@ const app = express();
 const db = require("./models");
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
+const commentRoutes = require("./routes/comment.routes");
 const bodyParsers = require("body-parser");
 const path = require("path");
 
@@ -40,3 +41,4 @@ app.listen(PORT, () => {
 
 app.use("/api", userRoutes);
 app.use("/api", postRoutes);
+app.use("/api", commentRoutes);
