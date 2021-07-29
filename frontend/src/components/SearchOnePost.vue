@@ -40,7 +40,7 @@
             <button
               class="deleteComment"
               @click="deleteComment(n)"
-              v-if="UserId == comment.UserId"
+              v-if="UserId == comment.UserId || admin == true"
             ></button>
           </div>
           <div class="comment-name">
@@ -53,7 +53,11 @@
         </div>
       </div>
     </article>
-    <button class="deletePost" @click="deletePost" v-if="UserId == post.UserId">
+    <button
+      class="deletePost"
+      @click="deletePost"
+      v-if="UserId == post.UserId || admin == true"
+    >
       Supprimer la publication
     </button>
   </div>
@@ -88,12 +92,14 @@ export default {
       text: "",
       editText: "",
       post: {},
+      admin: false,
     };
   },
 
   mounted() {
     this.getOnePost();
     this.UserId = localStorage.getItem("UserId");
+    this.admin = Boolean(localStorage.getItem("admin"));
   },
 
   methods: {

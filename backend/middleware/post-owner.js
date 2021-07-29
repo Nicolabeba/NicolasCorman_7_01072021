@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.verify(token, process.env.AUTH_SECRET_KEY_TOKEN);
 
-  if (decodedToken.admin) return next();
+  if (decodedToken.admin === true) return next();
 
   const id = req.params.id;
   Post.findByPk(id, { where: { UserId: req.body.UserId } })

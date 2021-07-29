@@ -32,7 +32,7 @@ exports.signup = (req, res) => {
         last_name: req.body.last_name,
         email: cryptoEmail,
         password: hash,
-        admin: false,
+        admin: 0,
       };
       // Save User in the database
       User.create(user)
@@ -52,7 +52,7 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
   const cryptoEmail = crypt.MD5(req.body.email).toString();
 
-  User.findOne({ email: cryptoEmail })
+  User.findOne({ where: { email: cryptoEmail } })
     .then((user) => {
       if (!user) {
         return res.status(401).json({ error: "Utilisateur non trouvé !" });
@@ -67,8 +67,9 @@ exports.login = (req, res) => {
             UserId: user.id,
             first_name: user.first_name,
             last_name: user.last_name,
+            admin: user.admin,
             token: jwt.sign(
-              { UserId: user.id, admin: user.admin },
+              { UserId: user.id },
 
               process.env.AUTH_SECRET_KEY_TOKEN,
               {
