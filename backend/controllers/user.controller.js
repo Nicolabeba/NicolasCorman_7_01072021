@@ -34,7 +34,6 @@ exports.signup = (req, res) => {
         last_name: req.body.last_name,
         email: cryptoEmail,
         password: hash,
-        // TODO: fix it, unsecure
         admin: false,
       };
       // Save User in the database

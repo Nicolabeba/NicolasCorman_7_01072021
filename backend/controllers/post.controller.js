@@ -65,6 +65,12 @@ exports.getOnePost = (req, res, next) => {
 
 //Modifier un post
 exports.modifyPost = async (req, res) => {
+  if (!req.body.content) {
+    res.status(400).send({
+      message: "Content can not be empty!",
+    });
+    return;
+  }
   const id = req.params.id;
   let result = [];
   try {

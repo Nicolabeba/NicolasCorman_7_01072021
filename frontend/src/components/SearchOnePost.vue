@@ -40,7 +40,7 @@
             <button
               class="deleteComment"
               @click="deleteComment(n)"
-              v-show="UserId == comment.UserId || admin == false"
+              v-if="UserId == comment.UserId || admin === true"
             ></button>
           </div>
           <div class="comment-name">
@@ -56,7 +56,7 @@
     <button
       class="deletePost"
       @click="deletePost"
-      v-show="UserId == post.UserId || admin == false"
+      v-if="UserId === post.UserId || admin === true"
     >
       Supprimer la publication
     </button>
@@ -98,8 +98,11 @@ export default {
 
   mounted() {
     this.getOnePost();
-    this.UserId = localStorage.getItem("UserId");
-    this.admin = Boolean(localStorage.getItem("admin"));
+    this.UserId = parseInt(localStorage.getItem("UserId"));
+    this.admin = localStorage.getItem("admin") === "true";
+    // revient à dire que :
+    // this.admin = "true" === "true"; //true
+    // this.admin = "true" === "false"; //false
   },
 
   methods: {
@@ -149,6 +152,11 @@ export default {
       const token = localStorage.getItem("token");
       const content = this.editText;
 
+      if (!content) {
+        // TODO: à afficher dans le navigateur/création d'une nouvelle balise small
+        console.log("Content can not be empty!");
+      }
+
       axios
         .put(
           `http://localhost:3000/api/post/${idPost}`,
@@ -177,10 +185,14 @@ export default {
       const token = localStorage.getItem("token");
       const UserId = localStorage.getItem("UserId");
 
+      if (!this.text) {
+        // TODO: à afficher dans le navigateur/création d'une nouvelle balise small
+        console.log("Content can not be empty!");
+      }
+
       const newComment = {
         first_name: localStorage.getItem("first_name"),
         last_name: localStorage.getItem("last_name"),
-
         content: this.text,
       };
 

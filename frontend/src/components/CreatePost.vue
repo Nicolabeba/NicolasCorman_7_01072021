@@ -64,6 +64,11 @@ export default {
       formData.set("UserId", UserId);
       formData.set("content", this.content);
 
+      if (!this.content) {
+        // TODO: à afficher dans le navigateur/création d'une nouvelle balise small
+        console.log("Content can not be empty!");
+      }
+
       axios
         .post(
           "http://localhost:3000/api/post/create",
