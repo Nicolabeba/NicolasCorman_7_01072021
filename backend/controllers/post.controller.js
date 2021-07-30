@@ -94,7 +94,26 @@ exports.modifyPost = async (req, res) => {
 // Supprimer un post
 exports.deletePost = (req, res) => {
   const id = req.params.id;
-  // TODO: not secure, fix me.
+
+  Comment.destroy({
+    where: { PostId: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "Comment was deleted successfully!",
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Comment with id=${id}.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete Comment with id=" + id,
+      });
+    });
 
   Post.destroy({
     where: { id: id },

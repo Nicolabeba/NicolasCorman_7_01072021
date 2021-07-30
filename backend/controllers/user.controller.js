@@ -5,6 +5,8 @@ const dotenv = require("dotenv");
 //Masquage de l'adresse email
 const crypt = require("crypto-js");
 const User = db.user;
+const Post = db.post;
+const Comment = db.comment;
 
 dotenv.config();
 
@@ -32,7 +34,8 @@ exports.signup = (req, res) => {
         last_name: req.body.last_name,
         email: cryptoEmail,
         password: hash,
-        admin: 0,
+        // TODO: fix it, unsecure
+        admin: false,
       };
       // Save User in the database
       User.create(user)
@@ -69,7 +72,7 @@ exports.login = (req, res) => {
             last_name: user.last_name,
             admin: user.admin,
             token: jwt.sign(
-              { UserId: user.id },
+              { UserId: user.id, admin: user.admin },
 
               process.env.AUTH_SECRET_KEY_TOKEN,
               {
@@ -86,6 +89,46 @@ exports.login = (req, res) => {
 //Supprime le compte d'un utilisateur
 exports.delete = (req, res) => {
   const id = req.params.id;
+
+  Comment.destroy({
+    where: { UserId: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "Comment was deleted successfully!",
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Comment with id=${id}.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete Comment with id=" + id,
+      });
+    });
+
+  Post.destroy({
+    where: { UserId: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "Post was deleted successfully!",
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Post with id=${id}.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not delete post with id=" + id,
+      });
+    });
 
   User.destroy({
     where: { id: id },

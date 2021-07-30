@@ -40,7 +40,7 @@
             <button
               class="deleteComment"
               @click="deleteComment(n)"
-              v-if="UserId == comment.UserId || admin == true"
+              v-show="UserId == comment.UserId || admin == false"
             ></button>
           </div>
           <div class="comment-name">
@@ -56,7 +56,7 @@
     <button
       class="deletePost"
       @click="deletePost"
-      v-if="UserId == post.UserId || admin == true"
+      v-show="UserId == post.UserId || admin == false"
     >
       Supprimer la publication
     </button>
